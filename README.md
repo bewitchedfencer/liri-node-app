@@ -33,10 +33,10 @@ You will see the files being installed in the terminal and the node modules will
 Copy the folder to your computer and make sure that Node.js is installed in your computer. You can visit [Node.js](https://nodejs.org/en/download/) and follow the instructions to download Node. Otherwise, you can run this program anywhere else you can run Node.js, such as a server.
 
 The command options when prompted are:
-spotify-this-song
-my-tweets
-do-what-it-says
-movie-this
+`spotify-this-song`
+`my-tweets`
+`do-what-it-says`
+`movie-this`
 
 Although I use inquirer node package module, I decided to use the input instead of the list prompt method because of the given requirements of the assignment. Given my own choice, I believe the list would be more appropriate, followed by the input for the song or movie choices.
 
