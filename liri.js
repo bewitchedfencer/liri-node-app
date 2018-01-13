@@ -36,8 +36,13 @@ function getTweets(){
       if (!error) {
           //all of the tweets are printed out
         tweets.forEach(function (element) {
-            console.log(`------------------------------\nCreated On: ${element.created_at} \n${element.text}\n------------------------------`);
-       });
+            var consoled = `------------------------------\nCreated On: ${element.created_at} \n${element.text}\n------------------------------`;
+            console.log(consoled);
+            fs.appendFile('log.txt', consoled, (err) => {
+                if (err) throw err;
+                console.log("Tweets Logged");
+              });
+        });
         }
     
     });
@@ -60,8 +65,12 @@ function getTweets(){
           var previewLink = newTrack.preview_url;
           var album = newTrack.album.name
           //all of the song data information is printed
-          console.log(`------------------------------ \nSong Name: ${song} \nArtist: ${artist} \nPreview Link: ${previewLink} \nAlbum: ${album} \n------------------------------`);
-
+          var consoled= `------------------------------ \nSong Name: ${song} \nArtist: ${artist} \nPreview Link: ${previewLink} \nAlbum: ${album} \n------------------------------`;
+          console.log(consoled);
+          fs.appendFile('log.txt', consoled, (err) => {
+            if (err) throw err;
+            console.log("Song Logged");
+          });
           });
     };
 
@@ -98,7 +107,12 @@ function getTweets(){
               var plot = info.Plot;
               var actors = info.Actors;
               //movie info is printed 
-              console.log(`------------------------------\nMovie Title: ${title} \nYear Released: ${year} \nIMDB Rating: ${imdb} \nRotten Tomatoes Rating: ${rottenTomatoes} \nCountry: ${country} \nMovie Language: ${language} \nPlot: ${plot} \nActors: ${actors} \n------------------------------`)
+              var consoled = `------------------------------\nMovie Title: ${title} \nYear Released: ${year} \nIMDB Rating: ${imdb} \nRotten Tomatoes Rating: ${rottenTomatoes} \nCountry: ${country} \nMovie Language: ${language} \nPlot: ${plot} \nActors: ${actors} \n------------------------------`;
+              console.log(consoled);
+              fs.appendFile('log.txt', consoled, (err) => {
+                if (err) throw err;
+                console.log("Movie Logged");
+              });
             };
             }
           
@@ -124,7 +138,10 @@ function getTweets(){
             newCommand=newArray[0];
             //the second part of the array is new content such as a movie or song to search
             newContent=newArray[1];
-
+            fs.appendFile('log.txt', newCommand, (err) => {
+                if (err) throw err;
+                console.log("New Command Logged");
+              });
             //the new command is put into this switch to run the appropriate function
             switch(newCommand){
                 case 'my-tweets':
@@ -142,6 +159,10 @@ function getTweets(){
                 //if the command in the file is not understood, the default message appears.
                 default:
                 console.log("I didn't understand that command. Check Read.Me for proper syntax.");
+                fs.appendFile('log.txt', "I didn't understand that command. Check Read.Me for proper syntax.", (err) => {
+                    if (err) throw err;
+                    console.log("Error Logged");
+                  });
             }
         });
 
