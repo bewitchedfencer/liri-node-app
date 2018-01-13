@@ -3,7 +3,10 @@ const keys = require("./keys.js");
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 var request = require('request');
+var fs = require('fs');
 
+'use strict';
+var inquirer = require('inquirer');
 
 var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
@@ -28,10 +31,10 @@ function getTweets(){
 
     // getTweets(); for testing the Tweet function
 
-    function getTrack(){
+    function getTrack(aSong){
         //if process.argv[2] exists then that is what is searched
         //else it will run Ace of Base
-        spotify.search({ type: 'track', query: 'The Piano Man', limit: 1 }, function(err, data){
+        spotify.search({ type: 'track', query: aSong, limit: 1 }, function(err, data){
             if (err) {
               return console.log('Error occurred: ' + err);
             }
@@ -85,5 +88,48 @@ function getTweets(){
     // getMovie(); for testing the movie function
 
     function justDoIt(){
-        
-    }
+        fs.readFile("random.txt", "utf8", (err, data)=>{
+            if(err) throw err;
+            console.log(JSON.stringify(data, null, 2));
+        });
+
+    };
+
+    // justDoIt(); for testing the read function
+var songChoice='';
+
+    inquirer
+    .prompt([
+      {
+        type:"input",
+        message: "What is your name?",
+        name: 'username'
+      },
+      {
+        type:"input",
+        message:`What would you like to do? Please only enter the command for now.`,
+        name:'command'
+      }]).then(function(inquirerResponse){
+          console.log(inquirerResponse.command);
+          if(inquirerResponse.command ==='my-tweets'){
+            getTweets();
+          }
+          else if(inquirerResponse.command ==='spotify-this-song'){
+            inquirer
+            .prompt([
+              {
+                  type:"input",
+                  message:`What song would you like to search, ${inquirerResponse.username}?`,
+                  name:"songChoice"
+              }]).then(function(songResponse){
+                  if (songResponse.songChoice){
+                  getTrack(songResponse.songChoice);
+                  }
+                  else{
+                      getTrack('The Sign');
+                  }
+              });
+            }
+            else if(inquirerResponse.command==='movie-this')
+
+      });
