@@ -52,7 +52,7 @@ When entering the commands into the random.txt file, you must format it as [a co
    
 [Request](https://www.npmjs.com/package/request)
 
-[OMDB API](http://www.omdbapi.com).
+[OMDB API](http://www.omdbapi.com)
 
 [DotEnv](https://www.npmjs.com/package/dotenv)
 
