@@ -178,15 +178,19 @@ function getTweets(){
                   message:`What song would you like to search, ${inquirerResponse.username}?`,
                   name:"songChoice"
               }]).then(function(songResponse){
+                  //if something is entered then it is searched
                   if (songResponse.songChoice){
                   getTrack(songResponse.songChoice);
                   }
+
+                  //otherwise this song is searched as a default
                   else{
                       getTrack('The Sign');
                   }
               });
             }
             else if(inquirerResponse.command==='movie-this'){
+                //if the movie search is input then it asks which movie you would like to search
                 inquirer
                 .prompt([
                   {
@@ -194,11 +198,14 @@ function getTweets(){
                       message:`What movie would you like to search, ${inquirerResponse.username}?`,
                       name:"movieChoice"
                   }]).then(function(movieResponse){
+                      //the movie is put into an array so that it's length can be checked
                       var movieArray = movieResponse.movieChoice.split(" ");
+                      //the search works as is for movies with a single title
                       if(movieArray.length===1){
                       getMovie(movieResponse.songChoice);
                       }
                       else{
+                        //for movies with longer than one word titles, the array is reduced and then passed through the function
                         const reducer = (accumulator, currentValue) => accumulator + " " + currentValue;
                         newContent = movieArray.reduce(reducer);
                         console.log(newContent);                        
