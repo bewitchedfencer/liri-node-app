@@ -6,7 +6,8 @@ This project uses Node.js to create a Lanugage Interpretation and Recognition In
 -------------------------------------------
 In order to use this program, you will need your own .env file with the corresponding keys for Spotify and Twitter. THe format should match that shown here:
 
-```Insert Spotify API keys
+```
+Insert Spotify API keys
 
 SPOTIFY_ID='your id'
 SPOTIFY_SECRET='your secret'
@@ -16,7 +17,8 @@ Insert Twitter API keys
 TWITTER_CONSUMER_KEY='your consumer key'
 TWITTER_CONSUMER_SECRET='your consumer secret'
 TWITTER_ACCESS_TOKEN_KEY='your access token key'
-TWITTER_ACCESS_TOKEN_SECRET='your access token secret'```
+TWITTER_ACCESS_TOKEN_SECRET='your access token secret'
+```
 
 Visit the [The Twitter API](https://apps.twitter.com/app/new) and the [Spotify API](https://developer.spotify.com/my-applications/#!/) to get your authorizations.
 
