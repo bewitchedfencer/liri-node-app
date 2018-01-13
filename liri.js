@@ -2,6 +2,7 @@ require("dotenv").config();
 const keys = require("./keys.js");	
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
+var request = require('request');
 
 
 var spotify = new Spotify(keys.spotify);
@@ -46,4 +47,43 @@ function getTweets(){
           });
     };
 
-    getTrack();
+    // getTrack(); for testing the spotify function
+
+
+    function getMovie(){
+        var movieTitle = "Mr. Nobody";
+        var queryURL = `http://www.omdbapi.com/?t=${movieTitle}&apikey=trilogy`;
+
+        var options = {
+            url: queryURL,
+            headers: {
+              'User-Agent': 'request'
+            }
+          };
+           
+          function callback(error, response, body) {
+            if (!error && response.statusCode == 200) {
+              var info = JSON.parse(body);
+              var title = info.Title;
+              var year = info.Year;
+              var imdb = info.Ratings[0].Value;
+              var rottenTomatoes = info.Ratings[1].Value;
+              var country = info.Country;
+              var language = info.Language;
+              var plot = info.Plot;
+              var actors = info.Actors;
+              console.log(`Movie Title: ${title} \nYear Released: ${year} \nIMDB Rating: ${imdb}
+              Rotten Tomatoes Rating: ${rottenTomatoes} \nCountry: ${country} \nMovie Language: ${language}
+              Plot: ${plot} \nActors: ${actors}`)
+            };
+            }
+          
+           
+          request(options, callback);
+        };
+
+    // getMovie(); for testing the movie function
+
+    function justDoIt(){
+        
+    }
