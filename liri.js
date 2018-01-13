@@ -1,27 +1,42 @@
+//configuring the .env file so that the keys can be used.
 require("dotenv").config();
+//importing the keys for the APIs at Twitter and Spotify
 const keys = require("./keys.js");	
+//importing the Twitter npm
 var Twitter = require('twitter');
+//importing the spotify api npm
 var Spotify = require('node-spotify-api');
+//importing request npm
 var request = require('request');
+// importing the file system npm
 var fs = require('fs');
 
+//importing inquirer
 'use strict';
 var inquirer = require('inquirer');
 
+//constructing the Spotify access using the keys
 var spotify = new Spotify(keys.spotify);
+//constructing the Twiter access using the keys
 var client = new Twitter(keys.twitter);
 
-
+//global variables to be used in the inquirer section of the code when someone runs do-what-it-says
+var newCommand='';
+var newContent='';
 
 
 //Twitter function
 
 function getTweets(){
+    //gives my screen name as a parameter
     var params = {screen_name: 'codingMaven19'};
+    //searches for the most recent twenty tweets of the user
     client.get('statuses/user_timeline', params, function(error, tweets, response) {
+        //if there is not an error
       if (!error) {
+          //all of the tweets are printed out
         tweets.forEach(function (element) {
-            console.log(`Created On: ${element.created_at} \n${element.text}`);
+            console.log(`------------------------------\nCreated On: ${element.created_at} \n${element.text}\n------------------------------`);
        });
         }
     
@@ -32,41 +47,48 @@ function getTweets(){
     // getTweets(); for testing the Tweet function
 
     function getTrack(aSong){
-        //if process.argv[2] exists then that is what is searched
-        //else it will run Ace of Base
+        //spotify is searched for the matching song
         spotify.search({ type: 'track', query: aSong, limit: 1 }, function(err, data){
             if (err) {
+                //if there is an error, the error is printed
               return console.log('Error occurred: ' + err);
             }
-           
-        //   console.log(data.tracks.items[0]); 
+           //creating the variables for all of the song data
           const newTrack = data.tracks.items[0];
           var artist = newTrack.artists[0].name;
           var song = newTrack.name;
           var previewLink = newTrack.preview_url;
           var album = newTrack.album.name
-          console.log(`Song Name: ${song} \nArtist: ${artist} \nPreview Link: ${previewLink} \nAlbum: ${album}`);
+          //all of the song data information is printed
+          console.log(`------------------------------ \nSong Name: ${song} \nArtist: ${artist} \nPreview Link: ${previewLink} \nAlbum: ${album} \n------------------------------`);
 
           });
     };
 
     // getTrack(); for testing the spotify function
 
-
-    function getMovie(){
-        var movieTitle = "Mr. Nobody";
+//function for finding the movies
+    function getMovie(aMovie){
+        //if no movie is entered it defaults to Mr. Nobody
+        var movieTitle = "Mr.Nobody"
+        //otherwise the movie is changed by user input in the inquirer section
+        movieTitle= aMovie;
+        //url is constructed
         var queryURL = `http://www.omdbapi.com/?t=${movieTitle}&apikey=trilogy`;
 
+        //url and necessary heard are created for the request function
         var options = {
             url: queryURL,
             headers: {
               'User-Agent': 'request'
             }
           };
-           
+          //callback function for movie 
           function callback(error, response, body) {
             if (!error && response.statusCode == 200) {
+              //parsed into JSON 
               var info = JSON.parse(body);
+              //all of the variables are declared for the movie
               var title = info.Title;
               var year = info.Year;
               var imdb = info.Ratings[0].Value;
@@ -75,46 +97,80 @@ function getTweets(){
               var language = info.Language;
               var plot = info.Plot;
               var actors = info.Actors;
-              console.log(`Movie Title: ${title} \nYear Released: ${year} \nIMDB Rating: ${imdb}
-              Rotten Tomatoes Rating: ${rottenTomatoes} \nCountry: ${country} \nMovie Language: ${language}
-              Plot: ${plot} \nActors: ${actors}`)
+              //movie info is printed 
+              console.log(`------------------------------\nMovie Title: ${title} \nYear Released: ${year} \nIMDB Rating: ${imdb} \nRotten Tomatoes Rating: ${rottenTomatoes} \nCountry: ${country} \nMovie Language: ${language} \nPlot: ${plot} \nActors: ${actors} \n------------------------------`)
             };
             }
           
-           
+           //actual request function called
           request(options, callback);
         };
 
     // getMovie(); for testing the movie function
 
+    //commands can be put into the text file to be run with this command
     function justDoIt(){
+        //read the content of the file
         fs.readFile("random.txt", "utf8", (err, data)=>{
+            //error thrown if there is an error
             if(err) throw err;
-            console.log(JSON.stringify(data, null, 2));
+            //data is saved into a string
+            var newString = data;
+            console.log(newString);
+            //the string is split at the comma (specified in the read.me) to make an array
+            var newArray = newString.split(",");
+            console.log(newArray);
+            //the first part of the array is the new command
+            newCommand=newArray[0];
+            //the second part of the array is new content such as a movie or song to search
+            newContent=newArray[1];
+
+            //the new command is put into this switch to run the appropriate function
+            switch(newCommand){
+                case 'my-tweets':
+                getTweets();
+                break;
+                case 'spotify-this-song':
+                getTrack(newContent);
+                break;
+                case 'movie-this':
+                getMovie(newContent);
+                break;
+                case 'do-what-it-says':
+                justDoIt();
+                break;
+                //if the command in the file is not understood, the default message appears.
+                default:
+                console.log("I didn't understand that command. Check Read.Me for proper syntax.");
+            }
         });
 
     };
 
     // justDoIt(); for testing the read function
-var songChoice='';
 
+    //inquirer used to collect the responses to questions
     inquirer
     .prompt([
       {
+        //asks user their name and stores it
         type:"input",
         message: "What is your name?",
         name: 'username'
       },
       {
+          //asks user for the desired command and stores it
         type:"input",
         message:`What would you like to do? Please only enter the command for now.`,
         name:'command'
+        //depending on the command the .then will run the corresponding conditional
       }]).then(function(inquirerResponse){
           console.log(inquirerResponse.command);
           if(inquirerResponse.command ==='my-tweets'){
             getTweets();
           }
           else if(inquirerResponse.command ==='spotify-this-song'){
+              //if the spotify command is entered, the user is asked what song they want to play
             inquirer
             .prompt([
               {
@@ -130,6 +186,29 @@ var songChoice='';
                   }
               });
             }
-            else if(inquirerResponse.command==='movie-this')
+            else if(inquirerResponse.command==='movie-this'){
+                inquirer
+                .prompt([
+                  {
+                      type:"input",
+                      message:`What movie would you like to search, ${inquirerResponse.username}?`,
+                      name:"movieChoice"
+                  }]).then(function(movieResponse){
+                      var movieArray = movieResponse.movieChoice.split(" ");
+                      if(movieArray.length===1){
+                      getMovie(movieResponse.songChoice);
+                      }
+                      else{
+                        const reducer = (accumulator, currentValue) => accumulator + " " + currentValue;
+                        newContent = movieArray.reduce(reducer);
+                        console.log(newContent);                        
+                        getMovie(newContent);
+                      }
+                  });
+            }
+            else if(inquirerResponse.command === 'do-what-it-says'){
+                justDoIt();
+
+            }
 
       });
